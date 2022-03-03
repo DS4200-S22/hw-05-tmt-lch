@@ -111,22 +111,92 @@ d3.csv("data/iris.csv").then((data) => {
 
     //TODO: Define a brush (call it brush1)
 
-    const brush1 =  svg1.call(d3.brush()
-                    .extent([[0,0],[width,height]])
-                    .on("start brush", updateChart)
-    )
+    const brush1 = d3.brush()                 // Add the brush feature using the d3.brush function
+                      .extent( [ [0,0], [width,height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+                     .on("start brush", updateChart)      // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+    
+    
     function updateChart() {
       extent = d3.event.selection
-      myCircle.classed("selected", function(d){ return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length) ) } )
+      myCircles1.classed("selected", function(d){ return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length) ) } )
     }
 
     //TODO: Add brush1 to svg1
-    svg1 = brush1
+    svg1.call(brush1);
   }
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
   {
     // Scatterplot2 code here 
+    let xKey2 = "Sepal_Width";
+    let yKey2 = "Petal_Width"
+
+    // Find max x
+    let maxX2 = d3.max(data, (d) => {return d[xKey2]; });
+
+    let x2 = d3.scaleLinear()
+                .domain([0, maxX2])
+                .range([margin.left, width-margin.right]);
+
+    // add x axis
+    svg2.append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`) 
+        .call(d3.axisBottom(x2))   
+        .attr("font-size", '20px')
+        .call((g) => g.append("text")
+                      .attr("x", width - margin.right)
+                      .attr("y", margin.bottom - 4)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(xKey2)
+        );
+    // Finx max y 
+    let maxY2 = d3.max(data, (d) => { return d[yKey2]; });
+
+    // Create Y scale
+    let y2 = d3.scaleLinear()
+                .domain([0, maxY2])
+                .range([height - margin.bottom, margin.top]); 
+
+    // Add y axis 
+    svg2.append("g")
+        .attr("transform", `translate(${margin.left}, 0)`) 
+        .call(d3.axisLeft(y2)) 
+        .attr("font-size", '20px') 
+        .call((g) => g.append("text")
+                      .attr("x", 0)
+                      .attr("y", margin.top)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(yKey2)
+      );
+
+    // Add points
+    const myCircles2 = svg2.selectAll("circle")
+                            .data(data)
+                            .enter()
+                              .append("circle")
+                              .attr("id", (d) => d.id)
+                              .attr("cx", (d) => x2(d[xKey2]))
+                              .attr("cy", (d) => y2(d[yKey2]))
+                              .attr("r", 8)
+                              .style("fill", (d) => color(d.Species))
+                              .style("opacity", 0.5);
+
+    //TODO: Define a brush (call it brush1)
+
+    const brush2 =  svg2.call(d3.brush()
+                    .extent([[0,0],[width,height]])
+                    .on("start brush", updateChart)
+    )
+    function updateChart() {
+      extent = d3.event.selection
+      myCircles2.classed("selected", function(d){ return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length) ) } )
+    }
+                    
+
+
+
   }
 
   //TODO: Barchart with counts of different species
