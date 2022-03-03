@@ -34,8 +34,7 @@ const svg3 = d3.select("#vis-holder")
 
 
 //TODO: Initialize bars. We will need these to be global. 
-let myBar1;
-
+let bar1;
 
 // Define color scale
 const color = d3.scaleOrdinal()
@@ -112,8 +111,17 @@ d3.csv("data/iris.csv").then((data) => {
 
     //TODO: Define a brush (call it brush1)
 
+    const brush1 =  svg1.call(d3.brush()
+                    .extent([[0,0],[width,height]])
+                    .on("start brush", updateChart)
+    )
+    function updateChart() {
+      extent = d3.event.selection
+      myCircle.classed("selected", function(d){ return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length) ) } )
+    }
+
     //TODO: Add brush1 to svg1
-    
+    svg1 = brush1
   }
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
