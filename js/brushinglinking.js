@@ -121,8 +121,17 @@ d3.csv("data/iris.csv").then((data) => {
       myCircles1.classed("selected", function(d){ return isBrushed(extent, x(d.Sepal_Length), y(d.Petal_Length) ) } )
     }
 
+
+    // const brush1 = d3.select("#brush")
+    //                   .call(d3.brush()
+    //                   .extent([0,0],[width,height]))
+    
+
     //TODO: Add brush1 to svg1
-    svg1.call(brush1);
+    // svg1.call(brush1);
+
+    brush1.svg1();
+    
   }
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
