@@ -196,13 +196,12 @@ d3.csv("data/iris.csv").then((data) => {
   //TODO: Barchart with counts of different species
   {
     // Bar chart code here 
-    xKey3 = "Species";
-    yKey3 = "Count";
-
-  
-    const data1 = [{Species:"setosa", count:"50"},
-                   {Species:"versicolor", count:"50"},
+  const data1 = [{Species:"setosa", count:"50"},
+                  {Species:"versicolor", count:"50"},
                   {Species:"virginica", count:"50"}];
+  
+  xKey3 = "Species";
+  yKey3 = "Count";
 
   let maxY3 = 50; 
 
@@ -234,21 +233,21 @@ d3.csv("data/iris.csv").then((data) => {
         .attr("font-size", '20px')
         .call((g) => g.append("text")
                       .attr("x", 0)
-                      .attr("y", margin.top)
+                      .attr("y", margin.top - 10)
                       .attr("fill", "black")
                       .attr("text-anchor", "end")
                       .text(yKey3));
 
-    svg3.selectAll(".bar") 
-        .data(data1) 
-        .enter()  
-        .append("rect") 
-        .attr("class", "bar") 
-        .attr("x", (d,i) => x3(i)) 
-        .attr("y", (d) => y3(d.count)) 
-        .attr("height", (d) => (height - margin.bottom) - y3(d.count)) 
-        .attr("width", x3.bandwidth())
-        .style("fill",(d)=>color(d.Species));
+    mybars = svg3.selectAll(".bar") 
+                  .data(data1) 
+                  .enter()  
+                  .append("rect") 
+                  .attr("class", "bar") 
+                  .attr("x", (d,i) => x3(i)) 
+                  .attr("y", (d) => y3(d.count)) 
+                  .attr("height", (d) => (height - margin.bottom) - y3(d.count)) 
+                  .attr("width", x3.bandwidth())
+                  .style("fill",(d)=>color(d.Species));
   }
 
   //Brushing Code---------------------------------------------------------------------------------------------
@@ -289,13 +288,13 @@ d3.csv("data/iris.csv").then((data) => {
     myCircles2.classed("selected", function(d){
       if (isBrushed(extent, x2(d.Sepal_Width), y2(d.Petal_Width)))
       {
-        selectSpecies.add(d.xKey3)
+        selectSpecies.add(d.Species)
       }
        return isBrushed(extent, x2(d.Sepal_Width), y2(d.Petal_Width))  } );
     //TODO: Give bold outline to all points in Scatterplot1 corresponding to points within the brush region in Scatterplot2
     myCircles1.classed("selected", function(d){ return isBrushed(extent, x2(d.Sepal_Width), y2(d.Petal_Width) ) } );
     //TODO: Give bold outline to all bars in bar chart with corresponding to species selected by Scatterplot2 brush
-    svg3.classed("selected", function(d){return selectSpecies.has(d[xKey3])});
+    mybars.classed("selected", function(d){return selectSpecies.has(d.Species)});
   }
 
     //Finds dots within the brushed region
